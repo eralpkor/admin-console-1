@@ -1,0 +1,4 @@
+const permissions = {
+  admin: {},
+  user: {},
+};
