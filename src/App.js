@@ -1,5 +1,11 @@
 import * as React from "react";
-import { Admin, Resource, CustomRoutes, Authenticated } from "react-admin";
+import {
+  Admin,
+  Resource,
+  CustomRoutes,
+  Authenticated,
+  usePermissions,
+} from "react-admin";
 import { Route } from "react-router-dom";
 import { UserList, EditUser, CreateUser } from "./components/Users";
 import {
@@ -19,40 +25,42 @@ const dataProvider = simpleRestProvider(
   "http://localhost:5000/api",
   httpClient
 );
+// import dataProvider from "./DataProvider/dataProvider";
 
-const App = () => (
-  <Admin
-    dataProvider={dataProvider}
-    dashboard={Dashboard}
-    authProvider={authProvider}
-    loginPage={LoginPage}
-    signUp={SignUp}
-  >
-    <CustomRoutes>
-      <Route
-        path="users/*"
-        element={
-          <Resource
-            name="users"
-            list={UserList}
-            create={CreateUser}
-            edit={EditUser}
-            icon={UserIcon}
-          />
-        }
+const App = () => {
+  const { isLoading, permissions } = usePermissions();
+
+  console.log("Permissions in app js ", permissions, isLoading);
+  if (isLoading) return null;
+
+  return isLoading ? (
+    <div>Waiting for permissions</div>
+  ) : (
+    <Admin
+      dataProvider={dataProvider}
+      dashboard={Dashboard}
+      authProvider={authProvider}
+      loginPage={LoginPage}
+    >
+      <Resource
+        name="users"
+        list={UserList}
+        create={CreateUser}
+        edit={EditUser}
+        icon={UserIcon}
       />
-    </CustomRoutes>
 
-    <Resource
-      name="customers"
-      list={CustomerList}
-      edit={EditCustomer}
-      create={CreateCustomer}
-      icon={PostIcon}
-    />
-    <Resource name="jobs" list={JobList} edit={EditJob} create={CreateJob} />
-  </Admin>
-);
+      <Resource
+        name="customers"
+        list={CustomerList}
+        edit={EditCustomer}
+        create={CreateCustomer}
+        icon={PostIcon}
+      />
+      <Resource name="jobs" list={JobList} edit={EditJob} create={CreateJob} />
+    </Admin>
+  );
+};
 
 export default App;
 
@@ -65,3 +73,16 @@ export default App;
 //       </CustomRoutes>
 //   </Admin>
 // );
+{
+  /* {permissions == "admin" && (
+        <>
+          <Resource
+            name="users"
+            list={UserList}
+            create={CreateUser}
+            edit={EditUser}
+            icon={UserIcon}
+          />
+        </>
+      )} */
+}
