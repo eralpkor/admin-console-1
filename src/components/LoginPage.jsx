@@ -51,12 +51,6 @@ export default function LoginPage() {
     console.log("LOGIN page inputs", inputs);
   }
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   console.log(e);
-  //   // will call authProvider.login({ email, password })
-
-  // };
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -64,10 +58,6 @@ export default function LoginPage() {
       username: data.get("username"),
       password: data.get("password"),
     }).catch(() => notify("Invalid username or password"));
-    console.log({
-      username: data.get("username"),
-      password: data.get("password"),
-    });
   };
 
   return (
