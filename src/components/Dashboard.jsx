@@ -6,7 +6,11 @@ import { UserName } from "../Auth/userAuth";
 export default () => (
   <Card>
     <CardHeader title="Welcome to the administration" />
-    <CardContent source="username">Welcome user</CardContent>
-    <UserName />
+    <CardContent>
+      Welcome{" "}
+      <strong>
+        <UserName />
+      </strong>
+    </CardContent>
   </Card>
 );
