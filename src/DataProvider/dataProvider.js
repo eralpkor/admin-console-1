@@ -3,27 +3,48 @@ import { stringify } from "query-string";
 
 // replace with my API
 
-const apiUrl = "http://192.168.1.9:5000/auth";
+const apiUrl = "http://192.168.1.9:5000/api";
 
-const httpClient = fetchUtils.fetchJson;
+// const httpClient = fetchUtils.fetchJson;
+const httpClient = (url, options = {}) => {
+  if (!options.headers) {
+    options.headers = new Headers({ Accept: "application/json" });
+  }
+  const { token } = JSON.parse(localStorage.getItem("auth")) || {};
+  options.headers.set("Authorization", `${token}`);
+  return fetchUtils.fetchJson(url, options);
+};
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getList: (resource, params) => {
-    const { page, perPage } = params.pagination;
     const { field, order } = params.sort;
+    console.log("Whats field and order", field, order);
     const query = {
-      sort: JSON.stringify([field, order]),
-      range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
-      filter: JSON.stringify(params.filter),
+      field,
+      order,
     };
     const url = `${apiUrl}/${resource}?${stringify(query)}`;
-    console.log("What is the url ", url);
     return httpClient(url).then(({ headers, json }) => ({
       data: json,
       total: parseInt(headers.get("content-range").split("/").pop(), 10),
     }));
   },
+
+  // getList: (resource, params) => {
+  //   const { page, perPage } = params.pagination;
+  //   const { field, order } = params.sort;
+  //   const query = {
+  //     sort: JSON.stringify([field, order]),
+  //     range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
+  //     filter: JSON.stringify(params.filter),
+  //   };
+  //   const url = `${apiUrl}/${resource}?${stringify(query)}`;
+  //   return httpClient(url).then(({ headers, json }) => ({
+  //     data: json,
+  //     total: parseInt(headers.get("content-range").split("/").pop(), 10),
+  //   }));
+  // },
 
   getOne: (resource, params) =>
     httpClient(`${apiUrl}/${resource}/${params.id}`).then(({ json }) => ({

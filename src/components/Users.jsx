@@ -12,11 +12,13 @@ import {
   PasswordInput,
   BooleanInput,
   Create,
+  useAuthenticated,
+  usePermissions,
 } from "react-admin";
 import MyUrlField from "./MyUrlField";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import { usePermissions } from "react-admin";
+import StickyFooter from "./NoAcess";
 
 const ConditionalEmailField = () => {
   const record = useRecordContext();
@@ -25,11 +27,12 @@ const ConditionalEmailField = () => {
 };
 
 export const UserList = () => {
+  useAuthenticated();
   const { isLoading, permissions } = usePermissions();
-  const record = useRecordContext();
-  console.log(permissions);
+  // const record = useRecordContext();
+  console.log("Permission in users ", permissions);
   if (permissions !== "admin") {
-    return <div>Youre crazy</div>;
+    return <StickyFooter />;
   }
   return (
     <List hasCreate={true}>

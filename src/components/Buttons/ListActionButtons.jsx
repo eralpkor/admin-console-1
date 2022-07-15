@@ -13,11 +13,12 @@ import IconEvent from "@mui/icons-material/Event";
 export const ListActionButtons = () => {
   const { total, isLoading } = useListContext();
   const { permissions } = usePermissions();
+  console.log("list action buttons ", permissions);
   return (
     <TopToolbar>
       {permissions === "admin" && <CreateButton />}
       <ExportButton />
-      <DeleteButton />
+
       {/* Add your custom actions */}
     </TopToolbar>
   );

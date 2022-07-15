@@ -18,58 +18,58 @@ import {
   usePermissions,
   useDelete,
   FunctionField,
+  SelectInput,
+  useRecordContext,
+  useNotify,
+  useRedirect,
+  ReferenceManyField,
+  Toolbar,
+  SaveButton,
 } from "react-admin";
-import { Divider, Grid } from "@mui/material";
-// custom tooltip to conditianaly render create button
-// usePermission hook every where
+import { Divider, Grid, Box, Typography } from "@mui/material";
+import { BulkActionButtons } from "./BulkActionButtons";
+import { ListActionButtons } from "./ListActionButtons";
+import { EditRecordButtons } from "./EditRecordButtons";
+// custom tooltip to conditianaly render create button +++
+// usePermission hook every where +++
 // create beautiful "you are not allowed" component +++
-// learn how to use mui grid
+// learn how to use mui grid +++
 // conditianaly show columns +++
 // math the balance and amount paid
-const getUserFilters = (permissions) =>
-  [
-    <TextInput label="Job search" source="job_title" alwaysOn />,
-    <TextInput source="username" alwaysOn />,
-    permissions === "admin" ? <TextInput source="assign_to" /> : null,
-  ].filter((filter) => filter !== null);
+const Aside = () => (
+  <Box sx={{ width: "200px", margin: "1em" }}>
+    <Typography variant="h6">Add comments</Typography>
+    <Typography variant="body2">Please fill the form:</Typography>
+  </Box>
+);
 
-export const JobList = ({ ...props }) => {
+export const JobList = (props) => {
   const { isLoading, permissions } = usePermissions();
   console.log("joblist pwrmissions ", permissions);
+  const notify = useNotify();
+  const redirect = useRedirect();
   if (isLoading) return null;
-
-  // DELETE one
-  const DeleteButton = ({ record }) => {
-    const [deleteOne, { isLoading, error }] = useDelete();
-    const handleClick = () => {
-      console.log("record ", record);
-      deleteOne("jobs", { id: record.id, previousData: record });
-    };
-    if (error) {
-      return <p>ERROR</p>;
-    }
-    return (
-      <button disabled={isLoading} onClick={handleClick}>
-        Delete
-      </button>
-    );
+  const onError = (error) => {
+    notify(`Could not load list: ${error.message}`, { type: "warning" });
+    redirect("/dashboard");
   };
+
   return (
-    <List sort={{ field: "job_title", order: "ASC" }}>
+    <List actions={<ListActionButtons />} queryOptions={{ onError }}>
       <Datagrid
+        bulkActionButtons={permissions === "admin" && <BulkActionButtons />}
         sx={{
           "& .column-job_title": { backgroundColor: "#fee" },
           "& .column-balance": { backgroundColor: "#fee" },
         }}
       >
-        {/* <TextField source="id" /> */}
         {/* <TextField source="created_at" /> */}
+        <TextField source="id" />
         <TextField source="job_title" />
         <TextField source="job_description" />
         <TextField source="in_progress" />
         <DateField source="due_date" />
         <TextField source="username" label="Processor" />
-
         {permissions === "admin" && <TextField source="balance" />}
         {permissions === "admin" && <TextField source="amount_paid_1" />}
         {permissions === "admin" && <TextField source="amount_paid_2" />}
@@ -89,46 +89,100 @@ export const JobList = ({ ...props }) => {
   );
 };
 
-// {...props}
-//       filters={getUserFilters(permissions)}
-//       sort={{ field: "user_id", order: "ASC" }}
+const EditTitle = () => {
+  const record = useRecordContext();
+  // let values = {
+  //   balance: record.balance,
+  //   amount_paid_1: record.amount_paid_1,
+  //   amount_paid_2: record.amount_paid_2,
+  //   amount_paid_3: record.amount_paid_3,
+  // };
 
-export const EditJob = () => {
+  // function calculate(values) {
+  //   var newValue =
+  //     values.amount_paid_1 + values.amount_paid_2 + values.amount_paid_3;
+  //   return values.balance - newValue;
+  // }
+
+  // console.log("Calculation ", calculate(values));
+
+  console.log("Edit button click ", record);
+  return <span>Job {record ? `"${record.job_title}"` : ""}</span>;
+};
+
+export const EditJob = (props) => {
   const { isLoading, permissions } = usePermissions();
-  console.log("joblist pwrmissions ", permissions);
+  const record = useRecordContext();
+  const notify = useNotify();
+  const redirect = useRedirect();
+
+  if (isLoading) return null;
+  const onError = (error) => {
+    notify(`Could not load list: ${error.message}`, { type: "warning" });
+    redirect("/dashboard");
+  };
   if (isLoading) return null;
 
   return (
-    <Edit>
-      <SimpleForm>
-        <Show>
-          <Grid container spacing={2}>
-            <Grid item xs={3}>
-              <SimpleShowLayout spacing={2}>
-                {permissions === "admin" && (
-                  <DateInput source="created_at" label="Created at" />
-                )}
-                <TextInput source="job_title" label="Job Title" />
-                <TextInput source="in_progress" label="Progress" />
-                <DateInput source="due_date" label="Due Date" />
-              </SimpleShowLayout>
-            </Grid>
-            <Grid item xs={3}>
-              <SimpleShowLayout spacing={2}>
-                <TextInput source="job_description" label="Description" />
-                <TextInput source="assigned_to" label="Processor: " />
-              </SimpleShowLayout>
-            </Grid>
-            <Grid item xs={3}>
-              <SimpleShowLayout>
+    <Edit aside={<Aside />} title={<EditTitle />} queryOptions={{ onError }}>
+      <SimpleForm toolbar={<EditRecordButtons />}>
+        {/* <SimpleForm toolbar={<MyToolbar />}> */}
+        <Grid container spacing={2}>
+          <Grid item xs={3}>
+            <TextField source="id" />
+
+            <TextField source="created_at" label="Created at" />
+            {permissions === "admin" && (
+              <TextInput source="job_title" label="Job Title" />
+            )}
+            {permissions === "user" && (
+              <TextField source="job_title" label="Job Title" />
+            )}
+            <SelectInput
+              source="in_progress"
+              label="Progress"
+              choices={[
+                { id: "open", name: "Open" },
+                { id: "in-progress", name: "In-Progress" },
+                { id: "closed", name: "Closed" },
+              ]}
+            />
+            {permissions === "admin" && (
+              <DateInput source="due_date" label="Due Date" />
+            )}
+
+            <TextField source="due_date" label="Due Date" />
+          </Grid>
+          <Grid item xs={3}>
+            <TextField source="job_description" />
+            <TextInput
+              source="job_description"
+              label="Description"
+              multiline={true}
+              fullWidth
+            />
+            {permissions === "admin" && (
+              <TextInput source="assigned_to" label="Processor: " />
+            )}
+          </Grid>
+          <Grid item xs={3}>
+            {permissions === "admin" && (
+              <>
                 <TextInput source="balance" label="Balance" />
                 <TextInput source="amount_paid_1" label="Amount paid 1" />
                 <TextInput source="amount_paid_2" label="Amount paid 2" />
                 <TextInput source="amount_paid_3" label="Amount paid 3" />
-              </SimpleShowLayout>
-            </Grid>
+              </>
+            )}
           </Grid>
-        </Show>
+
+          {/* <Grid item xs={3}>
+              <SimpleShowLayout>
+                <TextField source="comment" label="Comments" />
+                <TextInput source="comment" fullWidth />
+              </SimpleShowLayout>
+            </Grid> */}
+        </Grid>
       </SimpleForm>
     </Edit>
   );
@@ -151,5 +205,5 @@ export const CreateJob = () => (
 );
 
 export const DeleteJob = () => {
-  return;
+  return null;
 };
