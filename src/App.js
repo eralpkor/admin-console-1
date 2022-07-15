@@ -1,31 +1,22 @@
 import * as React from "react";
-import {
-  Admin,
-  Resource,
-  CustomRoutes,
-  Authenticated,
-  usePermissions,
-} from "react-admin";
-import { Route } from "react-router-dom";
+import { Admin, Resource, usePermissions } from "react-admin";
 import { UserList, EditUser, CreateUser } from "./components/Users";
-import {
-  CustomerList,
-  EditCustomer,
-  CreateCustomer,
-} from "./components/CustomerList";
-import { JobList, EditJob, CreateJob } from "./components/JobList";
+import { JobList } from "./components/jobs/JobList";
+import { EditJob } from "./components/jobs/EditJob";
+import { CreateJob } from "./components/jobs/CreateJob";
+import { CustomerList } from "./components/Customers/CustomerList";
+import { EditCustomer } from "./components/Customers/EditCustomer";
+import { CreateCustomer } from "./components/Customers/CreateCustomer";
 import PostIcon from "@mui/icons-material/Book";
 import UserIcon from "@mui/icons-material/Group";
 import Dashboard from "./components/Dashboard";
 import { authProvider, httpClient } from "./Auth/authProvider";
 import simpleRestProvider from "ra-data-simple-rest";
 import LoginPage from "./components/LoginPage";
-import SignUp from "./components/SignUp";
 const dataProvider = simpleRestProvider(
   "http://localhost:5000/api",
   httpClient
 );
-// import dataProvider from "./DataProvider/dataProvider";
 
 const App = () => {
   const { isLoading, permissions } = usePermissions();
@@ -64,25 +55,4 @@ const App = () => {
 
 export default App;
 
-// const App = () => (
-//   <Admin authProvider={authProvider}>
-//       <CustomRoutes>
-//           <Route path="/foo" element={<Authenticated><Foo /></Authenticated>} />
-//           <Route path="/bar" element={<Authenticated><Bar /></Authenticated>} />
-//           <Route path="/anoonymous" element={<Baz />} />
-//       </CustomRoutes>
-//   </Admin>
-// );
-{
-  /* {permissions == "admin" && (
-        <>
-          <Resource
-            name="users"
-            list={UserList}
-            create={CreateUser}
-            edit={EditUser}
-            icon={UserIcon}
-          />
-        </>
-      )} */
-}
+//EOF
