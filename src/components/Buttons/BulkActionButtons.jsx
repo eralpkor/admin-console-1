@@ -6,7 +6,7 @@ export const BulkActionButtons = () => {
   return (
     <>
       {/* default bulk delete action */}
-      {permissions === "admin" && <BulkDeleteButton />}
+      <BulkDeleteButton />
       {/* <ResetViewsButton label="Reset Views" /> */}
     </>
   );
