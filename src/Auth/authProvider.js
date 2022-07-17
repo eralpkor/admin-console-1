@@ -59,7 +59,9 @@ export const authProvider = {
   // called when the user navigates to a new location, to check for permissions / roles
   getPermissions: () => {
     const auth = JSON.parse(localStorage.getItem("auth")) || {};
-    if (auth.is_admin) {
+    if (auth.role_id === 1) {
+      return Promise.resolve("superAdmin");
+    } else if (auth.role_id === 2) {
       return Promise.resolve("admin");
     } else {
       return Promise.resolve("user");
