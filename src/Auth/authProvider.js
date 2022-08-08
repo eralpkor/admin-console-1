@@ -72,8 +72,9 @@ export const authProvider = {
     const auth = JSON.parse(localStorage.getItem("auth"));
     return Promise.resolve({
       id: auth.id,
-      fullName: auth.first_name,
+      username: auth.username,
       role: auth.role,
+      fullName: `${auth.first_name} ${auth.last_name}`,
     });
   },
 };
