@@ -53,15 +53,8 @@ const theme = {
 
 const App = () => {
   const { isLoading } = usePermissions();
-  // const { identity, isLoading: identityLoading } = useGetIdentity();
-
-  // if (identityLoading) return <>Loading...</>;
 
   if (isLoading) return <div>Waiting for permissions</div>;
-  // console.log("App identity ", identity);
-  // return isLoading ? (
-  //   <div>Waiting for permissions</div>
-  // ) : (
 
   return (
     <Admin
