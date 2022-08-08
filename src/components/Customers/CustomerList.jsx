@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Router } from "react-dom";
 import {
   List,
   Datagrid,
@@ -8,8 +7,9 @@ import {
   usePermissions,
   useNotify,
   useRedirect,
+  EmailField,
 } from "react-admin";
-import MyUrlField from "../MyUrlField";
+import StickyFooter from "../Helpers/NoAcess";
 import { ListActionButtons } from "../Buttons/ListActionButtons";
 import { BulkActionButtons } from "../Buttons/BulkActionButtons";
 
@@ -20,6 +20,10 @@ export const CustomerList = () => {
   const redirect = useRedirect();
 
   if (isLoading) return null;
+  console.log("Permission in users ", permissions);
+  if (permissions !== "superAdmin") {
+    return <StickyFooter />;
+  }
   // if error redirect to dashboard
   const onError = (error) => {
     notify(`Could not load list: ${error.message}`, { type: "warning" });
@@ -28,16 +32,20 @@ export const CustomerList = () => {
   return (
     <List queryOptions={{ onError }} actions={<ListActionButtons />}>
       {/* <Datagrid rowClick="edit"> */}
-      <Datagrid bulkActionButtons={<BulkActionButtons />}>
-        {/* <TextField source="id" /> */}
+      <Datagrid
+        bulkActionButtons={
+          permissions === "superAdmin" && <BulkActionButtons />
+        }
+      >
+        <TextField source="id" />
         <TextField source="first_name" />
         <TextField source="last_name" />
         <TextField source="phone" />
-        <MyUrlField source="email" />
+        <EmailField source="email" />
         <TextField source="company" />
         <TextField source="notes" />
 
-        {permissions === "admin" && <EditButton />}
+        {permissions === "superAdmin" && <EditButton />}
       </Datagrid>
     </List>
   );
