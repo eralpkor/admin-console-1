@@ -10,7 +10,7 @@ export const EditCustomer = () => {
         <TextInput source="phone" label="Phone" />
         <TextInput source="email" type="email" label="Email" />
         <TextInput source="company" label="Company" />
-        <TextInput source="notes" label="Notes:" multiline />
+        <TextInput source="notes" label="Notes:" multiline fullWidth />
       </SimpleForm>
     </Edit>
   );
