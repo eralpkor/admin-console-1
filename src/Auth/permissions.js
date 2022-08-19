@@ -1,4 +1,0 @@
-const permissions = {
-  admin: {},
-  user: {},
-};
