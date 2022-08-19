@@ -62,14 +62,13 @@ const App = () => {
       dashboard={Dashboard}
       authProvider={authProvider}
       loginPage={LoginPage}
-      layout={MyLayout}
     >
       {/*  Restricting Access */}
       {(permissions) => [
         <Resource
           name="jobs"
           list={JobList}
-          edit={permissions === "superAdmin" || "admin" ? JobEdit : null}
+          edit={JobEdit}
           create={permissions === "superAdmin" || "admin" ? JobCreate : null}
           show={JobShow}
           icon={WorkIcon}
