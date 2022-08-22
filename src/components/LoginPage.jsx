@@ -36,20 +36,8 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function LoginPage() {
-  const [inputs, setInputs] = useState({
-    username: "",
-    password: "",
-  });
-  const { username, password } = inputs;
-
   const login = useLogin();
   const notify = useNotify();
-
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setInputs((inputs) => ({ ...inputs, [name]: value }));
-    console.log("LOGIN page inputs", inputs);
-  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -104,10 +92,6 @@ export default function LoginPage() {
               id="password"
               autoComplete="current-password"
             />
-            {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
             <Button
               type="submit"
               fullWidth
@@ -116,18 +100,6 @@ export default function LoginPage() {
             >
               Sign In
             </Button>
-            {/* <Grid container>
-              <Grid item xs>
-                <Link to="/register" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid> */}
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
@@ -136,50 +108,4 @@ export default function LoginPage() {
   );
 }
 
-// const LoginPage = ({ theme }) => {
-//   // const [email, setEmail] = useState("");
-//   // const [password, setPassword] = useState("");
-//   const [inputs, setInputs] = useState({
-//     username: "",
-//     password: "",
-//   });
-//   const { username, password } = inputs;
-
-//   const login = useLogin();
-//   const notify = useNotify();
-
-//   function handleChange(e) {
-//     const { name, value } = e.target;
-//     setInputs((inputs) => ({ ...inputs, [name]: value }));
-//     console.log("LOGIN page inputs", inputs);
-//   }
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     console.log(e);
-//     // will call authProvider.login({ email, password })
-//     login({ username, password }).catch(() =>
-//       notify("Invalid username or password")
-//     );
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit}>
-//       <input
-//         name="username"
-//         type="text"
-//         value={username}
-//         onChange={handleChange}
-//       />
-//       <input
-//         name="password"
-//         type="password"
-//         value={password}
-//         onChange={handleChange}
-//       />
-//       <button className="btn btn-primary">Login</button>
-//     </form>
-//   );
-// };
-
-// export default LoginPage;
+// EOF
