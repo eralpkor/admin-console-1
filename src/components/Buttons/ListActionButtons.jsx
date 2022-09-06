@@ -1,25 +1,23 @@
 import {
   TopToolbar,
-  FilterButton,
   CreateButton,
   ExportButton,
-  Button,
   usePermissions,
-  useListContext,
-  DeleteButton,
+  TextInput,
+  FilterButton,
+  FilterForm,
 } from "react-admin";
-import IconEvent from "@mui/icons-material/Event";
+import { Stack } from "@mui/material";
 
 export const ListActionButtons = () => {
-  const { total, isLoading } = useListContext();
   const { permissions } = usePermissions();
-  console.log("list action buttons ", permissions);
   return (
-    <TopToolbar>
-      {permissions === "admin" && <CreateButton />}
-      <ExportButton />
-
-      {/* Add your custom actions */}
-    </TopToolbar>
+    <>
+      <TopToolbar>
+        {permissions === "user" ? null : <CreateButton />}
+        <ExportButton />
+        {/* Add your custom actions */}
+      </TopToolbar>
+    </>
   );
 };
