@@ -36,6 +36,7 @@ import { PaymentsList } from "./components/Payments/PaymentsList";
 import { PaymentCreate } from "./components/Payments/PaymentCreate";
 import { PaymentEdit } from "./components/Payments/PaymentEdit";
 import { CommentsList } from "./components/Comments/CommentsList";
+import { CommentsEdit } from "./components/Comments/CommentsEdit";
 import { JobShow } from "./components/jobs/JobShow";
 const dataProvider = simpleRestProvider(
   "http://localhost:5000/api",
@@ -58,6 +59,7 @@ const App = () => {
 
   return (
     <Admin
+      disableTelemetry
       dataProvider={dataProvider}
       dashboard={Dashboard}
       authProvider={authProvider}
@@ -73,7 +75,12 @@ const App = () => {
           show={JobShow}
           icon={WorkIcon}
         />,
-        <Resource name="comments" list={CommentsList} icon={CommentIcon} />,
+        <Resource
+          name="comments"
+          list={CommentsList}
+          edit={CommentsEdit}
+          icon={CommentIcon}
+        />,
         permissions === "superAdmin" ? (
           <Resource
             name="users"
