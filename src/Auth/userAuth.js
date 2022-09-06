@@ -5,7 +5,6 @@ import { useGetIdentity } from "react-admin";
 
 export const UserName = ({ userId }) => {
   const { identity, isLoading, error } = useGetIdentity();
-  console.log(identity);
 
   if (isLoading) return <div>Loading</div>;
   if (error) return <div>error;</div>;
