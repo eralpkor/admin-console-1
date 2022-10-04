@@ -1,4 +1,4 @@
-import { AuthProvider, fetchUtils } from "react-admin";
+import { fetchUtils } from "react-admin";
 
 const apiUrl = "http://localhost:5000/api";
 
@@ -59,12 +59,12 @@ export const authProvider = {
   // called when the user navigates to a new location, to check for permissions / roles
   getPermissions: () => {
     const auth = JSON.parse(localStorage.getItem("auth")) || {};
-    if (auth.role === "superAdmin") {
-      return Promise.resolve("superAdmin");
-    } else if (auth.role === "admin") {
-      return Promise.resolve("admin");
+    if (auth.role === "SUPERADMIN") {
+      return Promise.resolve("SUPERADMIN");
+    } else if (auth.role === "ADMIN") {
+      return Promise.resolve("ADMIN");
     } else {
-      return Promise.resolve("user");
+      return Promise.resolve("USER");
     }
   },
 
@@ -74,7 +74,7 @@ export const authProvider = {
       id: auth.id,
       username: auth.username,
       role: auth.role,
-      fullName: `${auth.first_name} ${auth.last_name}`,
+      fullName: `${auth.firstName} ${auth.lastName}`,
     });
   },
 };
