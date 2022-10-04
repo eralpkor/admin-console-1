@@ -37,6 +37,7 @@ import { PaymentCreate } from "./components/Payments/PaymentCreate";
 import { PaymentEdit } from "./components/Payments/PaymentEdit";
 import { CommentsList } from "./components/Comments/CommentsList";
 import { CommentsEdit } from "./components/Comments/CommentsEdit";
+import { CommentCreate } from "./components/Comments/CommentCreate";
 import { JobShow } from "./components/jobs/JobShow";
 const dataProvider = simpleRestProvider(
   "http://localhost:5000/api",
@@ -68,51 +69,44 @@ const App = () => {
       {/*  Restricting Access */}
       {(permissions) => [
         <Resource
-          name="jobs"
+          name="job"
           list={JobList}
           edit={JobEdit}
-          create={permissions === "superAdmin" || "admin" ? JobCreate : null}
+          create={permissions === "SUPERADMIN" || "ADMIN" ? JobCreate : null}
           show={JobShow}
           icon={WorkIcon}
         />,
         <Resource
-          name="comments"
+          name="comment"
           list={CommentsList}
           edit={CommentsEdit}
+          create={CommentCreate}
           icon={CommentIcon}
         />,
-        permissions === "superAdmin" ? (
+        permissions === "SUPERADMIN" ? (
           <Resource
-            name="users"
+            name="user"
             list={UserList}
             create={CreateUser}
             edit={EditUser}
             icon={UserIcon}
           />
         ) : null,
-        permissions === "superAdmin" || "admin" ? (
+        permissions === "SUPERADMIN" || "ADMIN" ? (
           <Resource
-            name="customers"
+            name="customer"
             list={CustomerList}
             edit={EditCustomer}
             create={CreateCustomer}
             icon={PersonOutlineIcon}
           />
         ) : null,
-        permissions === "superAdmin" || "admin" ? (
+        permissions === "SUPERADMIN" || "ADMIN" ? (
           <Resource
-            name="accounts"
-            list={AccountsList}
-            create={AccountsCreate}
-            edit={AccountEdit}
-            icon={AccountBalanceIcon}
-          />
-        ) : null,
-        permissions === "superAdmin" || "admin" ? (
-          <Resource
-            name="payments"
+            name="payment"
             list={PaymentsList}
             edit={PaymentEdit}
+            create={PaymentCreate}
             icon={AttachMoneyIcon}
           />
         ) : null,
