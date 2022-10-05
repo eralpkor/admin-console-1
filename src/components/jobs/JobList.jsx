@@ -30,7 +30,6 @@ const filters = [
 
 export const JobList = (props) => {
   const { isLoading, permissions } = usePermissions();
-  console.log("joblist permissions ", permissions);
   const record = useRecordContext();
   const notify = useNotify();
   const redirect = useRedirect();
@@ -39,7 +38,6 @@ export const JobList = (props) => {
     notify(`Could not load list: ${error.message}`, { type: "warning" });
     redirect("/dashboard");
   };
-  console.log("record, ", record);
   // change the color add to data grid
   // sx={{
   //   "& .column-title": { backgroundColor: "#fee" },
