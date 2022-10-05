@@ -5,12 +5,12 @@ export const EditCustomer = () => {
   return (
     <Edit>
       <SimpleForm>
-        <TextInput source="first_name" label="First Name" />
-        <TextInput source="last_name" label="Last Name" />
+        <TextInput source="firstName" label="First Name" />
+        <TextInput source="lastName" label="Last Name" />
         <TextInput source="phone" label="Phone" />
         <TextInput source="email" type="email" label="Email" />
         <TextInput source="company" label="Company" />
-        <TextInput source="notes" label="Notes:" multiline fullWidth />
+        <TextInput source="comment" label="Notes:" multiline fullWidth />
       </SimpleForm>
     </Edit>
   );
