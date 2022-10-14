@@ -1,16 +1,8 @@
 import * as React from "react";
 import {
-  List,
-  Datagrid,
-  TextField,
-  EditButton,
-  useRecordContext,
-  Edit,
   SimpleForm,
   TextInput,
   required,
-  useAuthenticated,
-  usePermissions,
   SelectInput,
   PasswordInput,
   Create,
@@ -18,22 +10,39 @@ import {
   minLength,
   maxLength,
 } from "react-admin";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import StickyFooter from "../Helpers/NoAcess";
+
+const PasswordValidate = (values) => {
+  const errors = {};
+
+  if (!values.password) {
+    errors.password = "Required";
+  }
+  if (!values.confirmPassword) {
+    errors.confirmPassword = "Required";
+  } else if (values.confirmPassword !== values.password) {
+    errors.confirmPassword = "Password mismatched";
+  }
+
+  return errors;
+};
 
 export const CreateUser = () => {
   const validateEmail = email();
   const validateFirstName = [required(), minLength(2), maxLength(15)];
+
   return (
-    <Create>
-      <SimpleForm>
+    <Create redirect="list">
+      <SimpleForm validate={PasswordValidate}>
         <TextInput
-          source="first_name"
+          source="firstName"
           validate={[required()]}
           label="First Name"
         />
-        <TextInput source="last_name" label="Last Name" />
+        <TextInput
+          source="lastName"
+          validate={[required()]}
+          label="Last Name"
+        />
         <TextInput
           source="username"
           label="Username"
@@ -44,15 +53,26 @@ export const CreateUser = () => {
           label="Password"
           validate={[required()]}
         />
-        <TextInput source="email" validate={validateEmail} label="Email" />
+        <TextInput
+          label="Repeat password"
+          source="confirmPassword"
+          type="password"
+          validate={required()}
+        />
+        <TextInput
+          source="email"
+          validate={validateEmail}
+          label="Email"
+          type="email"
+        />
         <SelectInput
           validate={[required()]}
-          source="role_id"
+          source="role"
           label="User role"
           choices={[
-            { id: 1, name: "Super Admin" },
-            { id: 2, name: "Admin" },
-            { id: 3, name: "Processor" },
+            { id: "SUEPERADMIN", name: "Super Admin" },
+            { id: "ADMIN", name: "Admin" },
+            { id: "USER", name: "Processor" },
           ]}
         />
       </SimpleForm>

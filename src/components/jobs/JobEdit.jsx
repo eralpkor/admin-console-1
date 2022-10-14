@@ -19,28 +19,21 @@ import {
   ReferenceManyField,
   TextField,
   ReferenceField,
+  Pagination,
 } from "react-admin";
 import { Link } from "react-router-dom";
-import {
-  Button,
-  Card,
-  CardContent,
-  Typography,
-  TextareaAutosize,
-  Box,
-  Divider,
-} from "@mui/material";
+import { Button, Card, CardContent, Typography, Divider } from "@mui/material";
 import { EditRecordButtons } from "../Buttons/EditRecordButtons";
 import { FullNameField } from "../Helpers/FullName";
 import "./jobEdit.css";
-import { ListActionButtons } from "../Buttons/ListActionButtons";
+import { ListActionButtons } from "../Buttons/JobActionButtons";
 // Show JOB title
 const EditTitle = () => {
   const record = useRecordContext();
   const { identity, isLoading: identityLoading } = useGetIdentity();
   if (identityLoading) return <>Loading...</>;
 
-  return <span>Job {record ? `"${record.title}"` : ""}</span>;
+  return <span>You're editing Job {record ? `"${record.title}"` : ""}</span>;
 };
 
 // Add new Comment button
@@ -104,13 +97,12 @@ export const JobEdit = (props) => {
   const redirect = useRedirect();
   const { identity, isLoading: identityLoading } = useGetIdentity();
   if (identityLoading) return <>Loading...</>;
-  console.log("identity", identity);
   if (isLoading) return null;
   const onError = (error) => {
     notify(`Could not load list: ${error.message}`, { type: "warning" });
     redirect("/dashboard");
   };
-  console.log("record edit ", record);
+
   return permissions === "USER" ? (
     // user inputs
     <Edit {...props} title={<EditTitle />} queryOptions={{ onError }}>
@@ -132,10 +124,12 @@ export const JobEdit = (props) => {
         <SelectInput
           source="inProgress"
           label="Progress"
+          defaultValue="OPEN"
+          validate={[required()]}
           choices={[
-            { id: "OPEN", name: "OPEN" },
-            { id: "INPROGRESS", name: "IN-PROGRESS" },
-            { id: "CLOSED", name: "CLOSED" },
+            { id: "OPEN", name: "Open" },
+            { id: "INPROGRESS", name: "In-Progress" },
+            { id: "CLOSED", name: "Closed" },
           ]}
         />
 
@@ -218,13 +212,20 @@ export const JobEdit = (props) => {
         <SelectInput
           source="inProgress"
           label="Progress"
+          defaultValue="OPEN"
+          validate={[required()]}
           choices={[
-            { id: "OPEN", name: "OPEN" },
-            { id: "INPROGRESS", name: "INPROGRESS" },
-            { id: "CLOSED", name: "CLOSED" },
+            { id: "OPEN", name: "Open" },
+            { id: "INPROGRESS", name: "In-Progress" },
+            { id: "CLOSED", name: "Closed" },
           ]}
         />
-        <TextInput label="Total $" source="total" />
+
+        <TextInput
+          label="Total $"
+          source="total"
+          format={(v) => "$" + v.toFixed(2)}
+        />
         <Labeled label="Balance">
           <NumberField
             sx={{ fontSize: "1.5rem" }}
@@ -237,22 +238,23 @@ export const JobEdit = (props) => {
           />
         </Labeled>
         {/* Payment list */}
-
         <Card>
           <h3 style={{ color: "#DC143C" }}>Payment/s</h3>
           <ReferenceManyField
+            pagination={<Pagination />}
             reference="payment"
             label="Payment"
             target="jobId"
-            perPage={100}
+            perPage={25}
           >
             <Datagrid rowClick="edit">
-              <NumberField source="id" />
-              <DateField source="createdAt" sortByOrder="DESC" />
+              <DateField source="createdAt" sortByOrder="ASC" />
               <DateField source="updatedAt" />
               {/*         */}
               <TextField source="editedBy" label="Admin" />
-              {/* <NumberField source="jobId" /> */}
+              <ReferenceField label="Added by" source="userId" reference="user">
+                <TextField source="username" />
+              </ReferenceField>
               <TextField source="paymentType" />
               <NumberField
                 sx={{ fontSize: "0.8rem" }}
@@ -273,32 +275,24 @@ export const JobEdit = (props) => {
         <Card>
           <h3 style={{ color: "#DC143C" }}>Comment/s</h3>
           <ReferenceManyField
+            pagination={<Pagination />}
             reference="comment"
             label="Comment"
             target="jobId"
-            perPage={100}
+            perPage={25}
           >
             <Datagrid rowClick="edit">
-              <DateField source="createdAt" sortByOrder="DESC" />
+              <DateField source="createdAt" sortByOrder="ASC" />
               <DateField source="updatedAt" />
               <TextField source="comment" />
 
-              <ReferenceField
-                label="Processor"
-                source="userId"
-                reference="user"
-              >
-                <TextField source="username" />
-              </ReferenceField>
-              <ReferenceField label="Admin" source="editedBy" reference="user">
-                <TextField source="username" />
-              </ReferenceField>
+              {/* <TextField source="editedBy" /> */}
+              <TextField source="admin" label="Added by" />
             </Datagrid>
           </ReferenceManyField>
           <CreateCommentButton />
         </Card>
         <Divider sx={{ marginTop: "1rem" }} />
-
         <Labeled label="Admin">
           <TextField disabled source="adminId" defaultValue={identity.id} />
         </Labeled>

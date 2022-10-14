@@ -12,8 +12,8 @@ import {
   TextField,
   usePermissions,
   useGetIdentity,
-  minValue,
-  number,
+  useNotify,
+  useRedirect,
 } from "react-admin";
 
 const EditTitle = (props) => {
@@ -23,19 +23,30 @@ const EditTitle = (props) => {
   console.log("Identity ", identity);
   console.log("Edit button click ", record); // record = job
 
-  return <span>Job ID: {record ? `"${record.jobId}"` : ""}</span>;
+  return (
+    <span>
+      You are creating a comment for Job ID: {record ? `"${record.jobId}"` : ""}
+    </span>
+  );
 };
 
 export const CommentCreate = (props) => {
-  const validateAmount = [number(), minValue(0)];
-
+  const notify = useNotify();
+  const redirect = useRedirect();
   const record = useRecordContext();
   const { identity, isLoading: identityLoading } = useGetIdentity();
   if (identityLoading) return <>Loading...</>;
-  console.log("what is props ", props);
+
+  const onSuccess = (data) => {
+    console.log("whats data ", data);
+    notify(`Changes saved`);
+    setTimeout(() => {
+      redirect(`/job/${data.jobId}`);
+    }, 1500);
+  };
 
   return (
-    <Create {...props} title={<EditTitle />}>
+    <Create {...props} title={<EditTitle />} mutationOptions={{ onSuccess }}>
       <SimpleForm>
         <TextInput source="jobId" label="Job id" />
         <TextInput source="comment" validate={[required()]} />

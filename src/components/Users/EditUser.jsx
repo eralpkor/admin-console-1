@@ -5,9 +5,7 @@ import {
   SimpleForm,
   TextInput,
   required,
-  useAuthenticated,
-  usePermissions,
-  ReferenceInput,
+  PasswordInput,
   SelectInput,
   minLength,
   maxLength,
@@ -31,6 +29,21 @@ const GetTitle = () => {
   );
 };
 
+const PasswordValidate = (values) => {
+  const errors = {};
+
+  if (!values.password) {
+    errors.password = "Required";
+  }
+  if (!values.confirmPassword) {
+    errors.confirmPassword = "Required";
+  } else if (values.confirmPassword !== values.password) {
+    errors.confirmPassword = "Password mismatched";
+  }
+
+  return errors;
+};
+
 export const EditUser = () => {
   const validateEmail = email();
   const validateFirstName = [required(), minLength(2), maxLength(15)];
@@ -48,12 +61,12 @@ export const EditUser = () => {
           validate={validateFirstName}
         />
         <TextInput source="username" label="Username" validate={required()} />
-        <TextInput
-          type="password"
+        <PasswordInput
           source="password"
           label="Password"
           validate={required()}
         />
+
         <TextInput
           size="large"
           source="email"

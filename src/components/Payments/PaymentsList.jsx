@@ -10,7 +10,7 @@ import {
   NumberField,
   DateField,
 } from "react-admin";
-import { ListActionButtons } from "../Buttons/ListActionButtons";
+import { ListActionButtons } from "../Buttons/PaymentActionButtons";
 import { BulkActionButtons } from "../Buttons/BulkActionButtons";
 
 import StickyFooter from "../Helpers/NoAcess";
@@ -21,7 +21,6 @@ export const PaymentsList = () => {
   const redirect = useRedirect();
 
   if (isLoading) return null;
-  console.log("Permission in users ", permissions);
   if (permissions === "USER") {
     return <StickyFooter />;
   }

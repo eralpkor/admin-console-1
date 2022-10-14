@@ -13,7 +13,15 @@ import {
   useNotify,
   useRedirect,
 } from "react-admin";
-
+import {
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  TextareaAutosize,
+  Box,
+  Divider,
+} from "@mui/material";
 const EditTitle = (props) => {
   const record = useRecordContext();
   const { identity, isLoading: identityLoading } = useGetIdentity();
@@ -21,7 +29,11 @@ const EditTitle = (props) => {
   console.log("Identity ", identity);
   console.log("Edit button click ", record.jobId); // record = job
 
-  return <span>Job ID: {record ? `"${record.jobId}"` : ""}</span>;
+  return (
+    <span>
+      You are creating a payment for Job ID: {record ? `"${record.jobId}"` : ""}
+    </span>
+  );
 };
 
 export const PaymentCreate = (props) => {

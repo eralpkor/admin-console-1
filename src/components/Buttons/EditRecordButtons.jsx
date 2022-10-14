@@ -17,9 +17,9 @@ export const EditRecordButtons = (props) => {
   return (
     <Toolbar>
       <SaveButton />
-      <Button color="primary" onClick={null}>
+      {/* <Button color="primary" onClick={null}>
         Custom Action
-      </Button>
+      </Button> */}
     </Toolbar>
   );
 };

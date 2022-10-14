@@ -8,20 +8,23 @@ import {
   useNotify,
   useRedirect,
   EmailField,
+  TextInput,
+  FilterForm,
+  FilterButton,
+  DateField,
 } from "react-admin";
 import StickyFooter from "../Helpers/NoAcess";
-import { ListActionButtons } from "../Buttons/ListActionButtons";
+import { ListActionButtons } from "../Buttons/CustomerActionButtons";
 import { BulkActionButtons } from "../Buttons/BulkActionButtons";
+import { Stack } from "@mui/material";
 
 export const CustomerList = () => {
   const { isLoading, permissions } = usePermissions();
-  console.log("joblist pwrmissions ", permissions);
   const notify = useNotify();
   const redirect = useRedirect();
 
   if (isLoading) return null;
-  console.log("Permission in users ", permissions);
-  if (permissions !== "superAdmin") {
+  if (permissions !== "SUPERADMIN") {
     return <StickyFooter />;
   }
   // if error redirect to dashboard
@@ -29,23 +32,24 @@ export const CustomerList = () => {
     notify(`Could not load list: ${error.message}`, { type: "warning" });
     redirect("/dashboard");
   };
+
   return (
-    <List queryOptions={{ onError }} actions={<ListActionButtons />}>
-      {/* <Datagrid rowClick="edit"> */}
+    <List
+      perPage={10}
+      queryOptions={{ onError }}
+      actions={<ListActionButtons />}
+    >
       <Datagrid
-        bulkActionButtons={
-          permissions === "superAdmin" && <BulkActionButtons />
-        }
+        rowClick="edit"
+        bulkActionButtons={permissions !== "USER" && <BulkActionButtons />}
       >
-        <TextField source="id" />
-        <TextField source="first_name" />
-        <TextField source="last_name" />
+        <DateField source="createdAt" sortByOrder="DESC" />
+        <TextField source="firstName" />
+        <TextField source="lastName" />
         <TextField source="phone" />
         <EmailField source="email" />
         <TextField source="company" />
-        <TextField source="notes" />
-
-        {permissions === "superAdmin" && <EditButton />}
+        <TextField source="comment" label="Notes" />
       </Datagrid>
     </List>
   );

@@ -3,46 +3,38 @@ import {
   List,
   Datagrid,
   TextField,
-  EditButton,
-  useRecordContext,
-  Edit,
-  SimpleForm,
-  TextInput,
-  required,
+  useNotify,
   useAuthenticated,
   usePermissions,
   EmailField,
+  useRedirect,
 } from "react-admin";
-import MyUrlField from "../Helpers/MyUrlField";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
+
 import StickyFooter from "../Helpers/NoAcess";
-
-const ConditionalEmailField = () => {
-  const record = useRecordContext();
-
-  // return record && record.hasEmail ? <EmailField source="email" /> : null;
-};
 
 export const UserList = () => {
   useAuthenticated();
   const { isLoading, permissions } = usePermissions();
-  // const record = useRecordContext();
-  console.log("Permission in users ", permissions);
-  if (permissions !== "superAdmin") {
+  const notify = useNotify();
+  const redirect = useRedirect();
+  const onError = (error) => {
+    notify(`Could not load list: ${error.message}`, { type: "warning" });
+    redirect("/dashboard");
+  };
+
+  if (permissions !== "SUPERADMIN") {
     return <StickyFooter />;
   }
   return (
-    <List hasCreate={true}>
+    <List hasCreate={true} queryOptions={{ onError }}>
       <Datagrid rowClick="edit">
         <TextField source="id" />
-        <TextField source="first_name" />
-        <TextField source="last_name" />
+        <TextField source="firstName" />
+        <TextField source="lastName" />
         <TextField source="username" />
         <EmailField source="email" />
         <TextField source="role" label="Role" />
-
-        <EditButton />
+        {/* <EditButton /> */}
       </Datagrid>
     </List>
   );

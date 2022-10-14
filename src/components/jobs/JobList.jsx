@@ -15,10 +15,11 @@ import {
   NumberField,
   ReferenceField,
   CloneButton,
+  CreateButton,
 } from "react-admin";
 import { Stack } from "@mui/material";
 import { BulkActionButtons } from "../Buttons/BulkActionButtons";
-import { ListActionButtons } from "../Buttons/ListActionButtons";
+import { ListActionButtons } from "../Buttons/JobActionButtons";
 import { FullNameField } from "../Helpers/FullName";
 
 const filters = [
@@ -43,23 +44,16 @@ export const JobList = (props) => {
   //   "& .column-title": { backgroundColor: "#fee" },
   //   "& .column-balance": { backgroundColor: "#fee" },
   // }}
-  const FilterToolbar = () => (
-    <Stack direction="row" justifyContent="space-between">
-      <FilterForm filters={filters} />
-      <div>
-        <FilterButton filters={filters} />
-      </div>
-    </Stack>
-  );
 
+  // filters={filters}
+  console.log("whats jobList record ", record);
   return (
     <List
       {...props}
       perPage={10}
-      actions={<ListActionButtons />}
       queryOptions={{ onError }}
+      actions={<ListActionButtons />}
     >
-      <FilterToolbar />
       <Datagrid
         rowClick="edit"
         bulkActionButtons={
@@ -70,7 +64,7 @@ export const JobList = (props) => {
           "& .column-balance": { backgroundColor: "#fee" },
         }}
       >
-        <TextField source="id" />
+        <DateField source="createdAt" sortByOrder="DESC" />
         <TextField source="title" />
         <TextField maxWidth={250} source="description" />
         {/* Customer name */}
@@ -78,6 +72,7 @@ export const JobList = (props) => {
         <TextField source="inProgress" />
         <DateField source="dueDate" />
         <TextField source="username" label="Processor" />
+
         <ReferenceField label="Admin" source="adminId" reference="user">
           <TextField source="username" />
         </ReferenceField>

@@ -11,11 +11,11 @@ import {
   SelectInput,
   Labeled,
   useGetIdentity,
-  AutocompleteInput,
   ReferenceInput,
   EditButton,
   required,
   useGetOne,
+  useRefresh,
 } from "react-admin";
 import StickyFooter from "../Helpers/NoAcess";
 
@@ -36,6 +36,7 @@ export const PaymentEdit = ({ record }) => {
   // const record = useRecordContext();
   const notify = useNotify();
   const redirect = useRedirect();
+  const refresh = useRefresh();
   const { identity, isLoading: identityLoading } = useGetIdentity();
   if (identityLoading) return <>Loading...</>;
   // if (!record) return <>Loading...</>;
@@ -46,6 +47,17 @@ export const PaymentEdit = ({ record }) => {
   const onError = (error) => {
     notify(`Could not load list: ${error.message}`, { type: "warning" });
     redirect("/dashboard");
+  };
+
+  const onSuccess = () => {
+    // setTimeout(() => {
+    //   notify(`Changes saved`);
+    // }, 1500);
+
+    setTimeout(() => {
+      redirect("/job");
+    }, 1500);
+    // refresh();
   };
   const id = identity.id;
   // const UserIdentity = () => {
