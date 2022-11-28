@@ -1,4 +1,5 @@
-import { fetchUtils } from "react-admin";
+import { fetchUtils, AUTH_LOGIN } from "react-admin";
+import decodeJwt from "jwt-decode";
 
 const apiUrl = "http://localhost:5000/api";
 
@@ -6,6 +7,7 @@ export const httpClient = (url, options = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
   }
+
   const { token } = JSON.parse(localStorage.getItem("auth")) || {};
   options.headers.set("Authorization", `${token}`);
   return fetchUtils.fetchJson(url, options);
@@ -25,13 +27,16 @@ export const authProvider = {
         if (response.status < 200 || response.status >= 300) {
           throw new Error(response.statusText);
         }
+
         return response.json();
       })
       .then((auth) => {
+        const decodedToken = decodeJwt(auth.token);
         localStorage.setItem(
           "auth",
           JSON.stringify({ ...auth, username: username })
-        );
+        ); // auth
+        localStorage.setItem("permissions", decodedToken.role);
       })
       .catch(() => {
         throw new Error("Network error");
@@ -40,12 +45,15 @@ export const authProvider = {
   // called when the user clicks on the logout button
   logout: () => {
     localStorage.removeItem("auth");
+    localStorage.removeItem("permissions");
     return Promise.resolve();
   },
   // called when the API returns an error
   checkError: ({ status }) => {
     if (status === 401 || status === 403) {
       localStorage.removeItem("auth");
+      localStorage.removeItem("permissions");
+
       return Promise.reject();
     }
     return Promise.resolve();
@@ -58,22 +66,19 @@ export const authProvider = {
   },
   // called when the user navigates to a new location, to check for permissions / roles
   getPermissions: () => {
-    const auth = JSON.parse(localStorage.getItem("auth")) || {};
-    if (auth.role === "SUPERADMIN") {
-      return Promise.resolve("SUPERADMIN");
-    } else if (auth.role === "ADMIN") {
-      return Promise.resolve("ADMIN");
-    } else {
-      return Promise.resolve("USER");
-    }
+    // const auth = JSON.parse(localStorage.getItem("auth")) || {};
+    const role = localStorage.getItem("permissions");
+    return role ? Promise.resolve(role) : Promise.reject();
   },
 
   getIdentity: () => {
     const auth = JSON.parse(localStorage.getItem("auth"));
+    const role = localStorage.getItem("permissions");
+
     return Promise.resolve({
       id: auth.id,
       username: auth.username,
-      role: auth.role,
+      role: role,
       fullName: `${auth.firstName} ${auth.lastName}`,
     });
   },
